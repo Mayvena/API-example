@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>API demo</title>
+<title>API Demo</title>
 <script src="https://code.jquery.com/jquery-3.2.1.js" type="text/javascript"></script>
 <script>
 
@@ -22,7 +22,132 @@
 	}
 
 	.heading{
+		text-align: center;
+		font-size: 2em;
+		padding: 1.5em;
+	}
 
+	.data{
+		font-size: 1em;
+		border: 1px solid #707070;
+		position: relative;
+	}
+	.closebutton{
+		width: 15px;
+		display: inline-block;
+		position: absolute;	
+		right: 10px;
+		top: 10px;
+	}
+	.close {
+	  top: 0px;
+	  right: 0px;
+	  width:24px;
+	  height: 24px;
+	  opacity: 0.5;
+	}
+	.close:hover {
+	  opacity: 1;
+	}
+	.close:before, .close:after {
+	  position: absolute;
+	  left: 0px;
+	  content: ' ';
+	  height: 24px;
+	  width: 2px;
+	  background-color: #333;
+	}
+	.close:before {
+	  transform: rotate(45deg);
+	}
+	.close:after {
+	  transform: rotate(-45deg);
+	}
+	.entry{
+		padding: 1.5em;
+		background-color: #F0E2E2;
+		position: relative;
+		border-bottom: 1px solid #D6C2C2;
+	}
+	.img{
+		padding-top: 5px;
+		width: 72px;
+		display: inline-block;
+	}
+	.img>img{
+		border-radius: 50%;
+	}
+	.name{
+		position: relative;
+		top: 50%;
+		transform: translateY(-50%);
+		padding-left: 10px;
+		width: 20%;
+		max-width: 25%;
+		display: inline-block;
+	}	
+	.address{
+		position: relative;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 40%;
+		max-width: 40%;
+		display: inline-block;
+	}
+	.age{
+		position: relative;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 10%;
+		max-width: 25%;
+		display: inline-block;
+	}
+	.label {
+		font-weight: bold;
+	}
+	.searchcontrols{
+		padding-bottom: 1em;
+	}
+	.searchField{
+		width: 60%;
+		padding: 0.6em 1.2em;
+		margin-right: 0.5em;
+		box-sizing: border-box;
+		font-family: Segoe UI,sans-serif;
+		font-size:1.2em;
+		color: #707070;		
+	}
+
+	label.custom-radio-button input[type="radio"] {
+		opacity:0;
+	}
+	 
+	label.custom-radio-button input[type="radio"] ~ .helping-el {
+		background-color: #FFFFFF;
+		border: 2px solid #707070;  
+		border-radius: 50%;
+		display: inline-block;
+		margin-right: 7px;
+		padding: 11px;
+		position: relative;
+		top: 3px;
+	}
+	 
+	label.custom-radio-button input[type="radio"]:checked ~ .helping-el {
+		border: 2px solid #707070;
+	}
+	 
+	label.custom-radio-button input[type="radio"]:checked ~ .helping-el:after {
+		background-color: #707070;
+		border-radius: 50%;
+		content: " ";
+		font-size: 33px;
+		height: 16px;
+		left: 3px;
+		position: absolute;
+		top: 3px;
+		width: 16px;
+	     
 	}
 </style>
 </head>
@@ -33,35 +158,59 @@
 			<div class="searchcontrols">
 				<form action="">
 					<input type="text" class="searchField" id="searchField" name="searchField" value="Search">
-	  				<input type="radio" name="filter" value="name" checked> Name
-	  				<input type="radio" name="filter" value="address"> Address
-	  				<input type="radio" name="filter" value="age"> Age
+					<label class="custom-radio-button">
+						<input type="radio" name="filter" value="name" checked/> 
+						<span class="helping-el"></span>
+						<span class="label-text">Name</span>
+					</label>
+					<label class="custom-radio-button">
+						<input type="radio" name="filter" value="address"/> 
+						<span class="helping-el"></span>
+						<span class="label-text">Address</span>
+					</label>
+					<label class="custom-radio-button">
+						<input type="radio" name="filter" value="age"/> 
+						<span class="helping-el"></span>
+						<span class="label-text">Age</span>
+					</label>
+
 				</form>
 			</div>
-			<div class="data">
-				
+			<div class="data" id="data">
+
 			</div>
 		</div>
 	</div>
 	<script>
-		// Define the listeners
+		
+		// Load initial data
 		$(document).ready(fetch());
+		
+		// Define the listeners
 		$("#searchField").click(function(){this.value = ""});
 		$("#searchField").keyup(function(){filter()});
 
-
 		// Functions
+
 	function fetch(){
 		//fetch data from API
-		console.log("connecting to API...");
 		$.ajax({
 		  url: 'https://randomuser.me/api/?results=20&inc=picture,name,location,dob&noinfo',
 		  dataType: 'json',
 		  success: function(data) {
-		    console.log(data);
-		    console.log(data[name]);
-		    var yourval = jQuery.parseJSON(JSON.stringify(data));
-		    console.log(yourval[1]);
+
+		    for (var i = 0; i < data['results'].length; i++){
+
+		    	var photo = data['results'][i]['picture']['medium'];
+		    	var name = titleCase(data['results'][i]['name']['first'] + " " + data['results'][i]['name']['last']);
+		    	var address = titleCase(data['results'][i]['location']['street'] + " " + data['results'][i]['location']['city']);
+		    	var age = data['results'][i]['dob']['age'];
+
+		    	// Generate list entries
+		    	$('#data').append('<div class="entry" id="' + i + '"><div class="img"><img src="' + photo + '"></div><div class="name"><div class="label">Name:</div><div class="info">' + name + '</div></div><div class="address"><div class="label">Address:</div><div class="info">' + address + '</div></div><div class="age"><div class="label">Age:</div><div class="info">' + age + '</div></div><div class="closebutton"><a href="#" class="close" id="close' + i + '"></div></div>');
+
+		    }
+		    $(".close").click(removeEntry);
 		  }
 		});
 
@@ -69,13 +218,29 @@
 	}
 
 	function filter(e){
-		//console.log("filter() called");
 		//keystroke search
-		var searchString = $("#searchField").val();
-		console.log("Search string = " + searchString);
-		if (searchString.length > 0 ){
-			console.log("Executing search on " + searchString);
-		}
+		var searchString = $("#searchField").val().toLowerCase();
+		var criteria = "." + $("input[name='filter']:checked").val();
+
+		$(".entry").filter(function() {
+			$(this).toggle($(this).find(criteria).text().toLowerCase().indexOf(searchString) > -1)
+		});
+
+	}
+
+	function removeEntry(e){
+		//remove an entry from the list
+		e.preventDefault();
+		$(this).parent().parent().remove();
+	}
+
+	function titleCase(str) {
+		//Helper function to capitalize first letter of every word
+	   	var splitStr = str.toLowerCase().split(' ');
+	   	for (var i = 0; i < splitStr.length; i++) {
+	   		splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
+	   	}
+	   	return splitStr.join(' '); 
 	}		
 	</script>
 </body>
