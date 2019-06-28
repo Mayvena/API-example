@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>JS Task</title>
+<script src="https://code.jquery.com/jquery-3.2.1.js" type="text/javascript"></script>
+<script>
+
+</script>
+<style>
+	.wrapper{
+		margin-right: auto; 
+		margin-left:  auto; 
+
+		max-width: 960px; 
+
+		padding-right: 10px; 
+		padding-left:  10px; 
+
+		font-family: Segoe UI,sans-serif;
+		color: #707070;
+
+	}
+
+	.heading{
+
+	}
+</style>
+</head>
+<body>
+	<div class="wrapper">
+		<div class="heading">USERS MANAGEMENT</div>
+		<div class="datawrapper">
+			<div class="searchcontrols">
+				<form action="">
+					<input type="text" class="searchField" id="searchField" name="searchField" value="Search">
+	  				<input type="radio" name="filter" value="name" checked> Name
+	  				<input type="radio" name="filter" value="address"> Address
+	  				<input type="radio" name="filter" value="age"> Age
+				</form>
+			</div>
+			<div class="data">
+				
+			</div>
+		</div>
+	</div>
+	<script>
+		// Define the listeners
+		$(document).ready(fetch());
+		$("#searchField").click(function(){this.value = ""});
+		$("#searchField").keyup(function(){filter()});
+
+
+		// Functions
+	function fetch(){
+		//fetch data from API
+		console.log("connecting to API...");
+		$.ajax({
+		  url: 'https://randomuser.me/api/?results=20&inc=picture,name,location,dob&noinfo',
+		  dataType: 'json',
+		  success: function(data) {
+		    console.log(data);
+		    console.log(data[name]);
+		    var yourval = jQuery.parseJSON(JSON.stringify(data));
+		    console.log(yourval[1]);
+		  }
+		});
+
+		
+	}
+
+	function filter(e){
+		//console.log("filter() called");
+		//keystroke search
+		var searchString = $("#searchField").val();
+		console.log("Search string = " + searchString);
+		if (searchString.length > 0 ){
+			console.log("Executing search on " + searchString);
+		}
+	}		
+	</script>
+</body>
+</html>
